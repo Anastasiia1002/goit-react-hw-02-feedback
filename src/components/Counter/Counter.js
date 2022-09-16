@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import FeedbackOptions from './Controls/FeedbackOptions/FeedbackOptions';
 import Statistics from './Controls/Statistics/Statistics';
@@ -25,8 +24,13 @@ class Counter extends React.Component {
   };
 
   countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    const result = good + neutral + bad;
+    // const { good, neutral, bad } = this.state;
+    const initValue = 0;
+    const result = Object.values(this.state).reduce(
+      (previousValue, currentValue) => previousValue + currentValue,
+      initValue
+    );
+    // const result = good + neutral + bad;
     return result;
   };
 
@@ -39,6 +43,7 @@ class Counter extends React.Component {
   };
 
   render() {
+    const Total = this.countTotalFeedback();
     const options = Object.keys(this.state);
     return (
       <div>
@@ -50,13 +55,13 @@ class Counter extends React.Component {
             />
           </Section>
         </div>
-        {this.countTotalFeedback() !== 0 ? (
+        {Total ? (
           <Section title="Statistics">
             <Statistics
               good={this.state.good}
               neutral={this.state.neutral}
               bad={this.state.bad}
-              total={this.countTotalFeedback()}
+              total={Total}
               positivePercentage={this.countPositiveFeedbackPercentage()}
             />
           </Section>
@@ -67,13 +72,5 @@ class Counter extends React.Component {
     );
   }
 }
-Counter.propTypes = {
-  good: PropTypes.string.isRequired,
-  neutral: PropTypes.string.isRequired,
-  bad: PropTypes.string.isRequired,
-  countPositiveFeedbackPercentage: PropTypes.func.isRequired,
-  countTotalFeedback: PropTypes.func.isRequired,
-  onLeaveFeedback: PropTypes.func.isRequired,
-};
 
 export default Counter;
